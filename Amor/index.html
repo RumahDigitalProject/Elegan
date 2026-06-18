@@ -1960,17 +1960,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-    <!-- SUNTIKAN PEMATIKAN FITUR DEMO -->
+      <!-- SUNTIKAN PEMATIKAN FITUR DEMO (VERSI REVISI) -->
   <script>
-    // 1. Mematikan semua formulir (Buku Tamu / RSVP)
+    // 1. HANYA mematikan Form yang memiliki kolom ketik (RSVP/Ucapan)
     document.querySelectorAll('form').forEach(form => {
       form.addEventListener('submit', function(e) {
-        e.preventDefault(); // Mencegah data terkirim
-        alert("Ini adalah versi pameran (Demo). Fitur kirim ucapan telah dinonaktifkan.");
+        // Cek apakah di form ini ada kolom input teks atau textarea
+        let formBukuTamu = form.querySelector('input[type="text"], textarea');
+        
+        // Kalau ada kolom isiannya, baru kita blokir
+        if (formBukuTamu) {
+          e.preventDefault(); // Mencegah data terkirim
+          alert("Ini adalah versi pameran (Demo). Fitur kirim ucapan telah dinonaktifkan.");
+        }
       });
     });
 
-    // 2. Mematikan semua link yang mengarah ke WhatsApp (Konfirmasi Amplop/Kehadiran)
+    // 2. Mematikan semua link yang mengarah ke WhatsApp
     document.querySelectorAll('a[href*="whatsapp.com"], a[href*="wa.me"]').forEach(link => {
       link.addEventListener('click', function(e) {
         e.preventDefault(); // Mencegah pindah ke WA
@@ -1978,6 +1984,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   </script>
+
 </body>
 </html>
 
