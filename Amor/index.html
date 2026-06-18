@@ -1962,6 +1962,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+    <!-- SUNTIKAN PEMATIKAN FITUR DEMO (JALUR BELAKANG) -->
+  <script>
+    setTimeout(function() {
+      // 1. Melumpuhkan langsung Tombol Kirim Ucapan
+      document.querySelectorAll('button[type="submit"]').forEach(btn => {
+        // Hanya lumpuhkan kalau di sekitarnya ada kolom ketikan (menghindari tombol Buka Undangan)
+        if (btn.closest('form') && btn.closest('form').querySelector('input, textarea')) {
+          btn.setAttribute('type', 'button'); // Cabut fungsi kirimnya
+          btn.onclick = function() {
+            alert("Ini adalah versi pameran (Demo). Fitur kirim ucapan dinonaktifkan.");
+          };
+        }
+      });
+
+      // 2. Melumpuhkan link WhatsApp
+      document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp"]').forEach(link => {
+        link.setAttribute('href', 'javascript:void(0)'); // Putuskan linknya
+        link.onclick = function() {
+          alert("Ini adalah versi pameran (Demo). Fitur konfirmasi WA dinonaktifkan.");
+        };
+      });
+    }, 1500); // Beri jeda 1.5 detik agar kodingan asli loading duluan
+  </script>
+
 </body>
 </html>
 
