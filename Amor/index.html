@@ -1959,7 +1959,25 @@ document.addEventListener("DOMContentLoaded", () => {
   setInterval(() => loadUcapan(false), 8000);
 
 });
-</script>
+
+    <!-- SUNTIKAN PEMATIKAN FITUR DEMO -->
+  <script>
+    // 1. Mematikan semua formulir (Buku Tamu / RSVP)
+    document.querySelectorAll('form').forEach(form => {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault(); // Mencegah data terkirim
+        alert("Ini adalah versi pameran (Demo). Fitur kirim ucapan telah dinonaktifkan.");
+      });
+    });
+
+    // 2. Mematikan semua link yang mengarah ke WhatsApp (Konfirmasi Amplop/Kehadiran)
+    document.querySelectorAll('a[href*="whatsapp.com"], a[href*="wa.me"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault(); // Mencegah pindah ke WA
+        alert("Ini adalah versi pameran (Demo). Fitur konfirmasi WhatsApp telah dinonaktifkan.");
+      });
+    });
+  </script>
 </body>
 </html>
 
