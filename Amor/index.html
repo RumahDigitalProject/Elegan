@@ -1960,30 +1960,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-      <!-- SUNTIKAN PEMATIKAN FITUR DEMO (VERSI REVISI) -->
+        <!-- SUNTIKAN PEMATIKAN FITUR DEMO (JALUR BELAKANG) -->
   <script>
-    // 1. HANYA mematikan Form yang memiliki kolom ketik (RSVP/Ucapan)
-    document.querySelectorAll('form').forEach(form => {
-      form.addEventListener('submit', function(e) {
-        // Cek apakah di form ini ada kolom input teks atau textarea
-        let formBukuTamu = form.querySelector('input[type="text"], textarea');
-        
-        // Kalau ada kolom isiannya, baru kita blokir
-        if (formBukuTamu) {
-          e.preventDefault(); // Mencegah data terkirim
-          alert("Ini adalah versi pameran (Demo). Fitur kirim ucapan telah dinonaktifkan.");
+    setTimeout(function() {
+      // 1. Melumpuhkan langsung Tombol Kirim Ucapan
+      document.querySelectorAll('button[type="submit"]').forEach(btn => {
+        // Hanya lumpuhkan kalau di sekitarnya ada kolom ketikan (menghindari tombol Buka Undangan)
+        if (btn.closest('form') && btn.closest('form').querySelector('input, textarea')) {
+          btn.setAttribute('type', 'button'); // Cabut fungsi kirimnya
+          btn.onclick = function() {
+            alert("Ini adalah versi pameran (Demo). Fitur kirim ucapan dinonaktifkan.");
+          };
         }
       });
-    });
 
-    // 2. Mematikan semua link yang mengarah ke WhatsApp
-    document.querySelectorAll('a[href*="whatsapp.com"], a[href*="wa.me"]').forEach(link => {
-      link.addEventListener('click', function(e) {
-        e.preventDefault(); // Mencegah pindah ke WA
-        alert("Ini adalah versi pameran (Demo). Fitur konfirmasi WhatsApp telah dinonaktifkan.");
+      // 2. Melumpuhkan link WhatsApp
+      document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp"]').forEach(link => {
+        link.setAttribute('href', 'javascript:void(0)'); // Putuskan linknya
+        link.onclick = function() {
+          alert("Ini adalah versi pameran (Demo). Fitur konfirmasi WA dinonaktifkan.");
+        };
       });
-    });
+    }, 1500); // Beri jeda 1.5 detik agar kodingan asli loading duluan
   </script>
+
 
 </body>
 </html>
