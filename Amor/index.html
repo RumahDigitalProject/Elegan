@@ -1064,7 +1064,7 @@
       -webkit-backface-visibility: hidden; transform: translateZ(0);
     }
     
-    #rsvp input, #rsvp select, #rsvp textarea, #rsvp button {
+    #rsvp input[type="text"], #rsvp textarea, #rsvp button {
       width: 100%; 
       max-width: 100%; 
       box-sizing: border-box; 
@@ -1080,13 +1080,68 @@
       overflow: hidden; 
     } 
 
-    #rsvp input, #rsvp textarea, #rsvp select { background: rgba(255,255,255,0.9); color: #333; }
+    #rsvp input[type="text"], #rsvp textarea { background: rgba(255,255,255,0.9); color: #333; }
     
     #rsvp button {
       background: rgba(243, 163, 2, 0.85); color: #ffffff; font-weight: 600; cursor: pointer; transition: 0.3s; border: none;
     }
     #rsvp button:hover { background: rgba(243, 163, 2, 1); transform: scale(1.02); }
     
+    /* =========================================
+       STYLE RADIO BUTTON KEHADIRAN (BARU)
+       ========================================= */
+    .radio-kehadiran-group {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+    
+    .radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px;
+      color: #ffffff;
+      padding: 5px; 
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .radio-label input[type="radio"] {
+      display: none; 
+    }
+    
+    .radio-custom {
+      width: 22px;
+      height: 22px;
+      border: 2px solid rgba(243, 163, 2, 0.8);
+      border-radius: 50%;
+      display: inline-block;
+      position: relative;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    .radio-label input[type="radio"]:checked + .radio-custom {
+      border-color: #f3a302;
+      background: rgba(255, 255, 255, 0.9);
+    }
+    
+    .radio-label input[type="radio"]:checked + .radio-custom::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      background: #f3a302;
+      border-radius: 50%;
+    }
+
     .ucapan-list { margin-top: 30px; text-align: left; }
     
     .ucapan-item {
@@ -1495,23 +1550,37 @@
   </div>
 </section>
 
+<!-- =========================================
+     RSVP & UCAPAN BARU (RADIO BUTTON SEJAJAR)
+     ========================================= -->
 <section id="rsvp" class="section-parallax">
   <div class="rsvp-container">
     <h2 class="RSVP-title animasi-scroll"> Rsvp & Ucapan</h2>
     <form id="rsvpForm">
       <input type="text" id="nama" placeholder="Nama Anda" required>
       <textarea id="ucapan" placeholder="Tulis ucapan Anda..." required oninput="this.style.height='48px';this.style.height=this.scrollHeight+'px'"></textarea>
-      <select id="kehadiran" required>
-        <option value="">Konfirmasi Kehadiran</option>
-        <option value="Hadir">Hadir</option>
-        <option value="Tidak Hadir">Tidak Hadir</option>
-      </select>
+      
+      <!-- Pilihan Kehadiran Sejajar (Radio Buttons) -->
+      <div class="radio-kehadiran-group">
+        <label class="radio-label">
+          <input type="radio" name="kehadiran" value="Hadir" required>
+          <span class="radio-custom"></span>
+          Hadir
+        </label>
+        <label class="radio-label">
+          <input type="radio" name="kehadiran" value="Tidak Hadir" required>
+          <span class="radio-custom"></span>
+          Tidak Hadir
+        </label>
+      </div>
+
       <button type="submit">Kirim Ucapan</button>
     </form>
     
-    <div class="ucapan-list" id="ucapanList">
+    <!-- Wadah ucapan disembunyikan secara default (display: none) -->
+    <div class="ucapan-list" id="ucapanList" style="display: none;">
       <h3 style="margin-top:30px; color: #f3a302; text-align: left;">Ucapan & Kehadiran</h3>
-      <div id="list"><p style="opacity:0.8; text-align:center; color: #fff;">Memuat ucapan... 😇</p></div>
+      <div id="list"></div>
       <div id="pagination" class="pagination-container"></div>
     </div>
   </div>
@@ -1824,7 +1893,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === lightbox) lightbox.style.display = 'none';
   });
 
-  // === RSVP & UCAPAN GOOGLE SHEET ===
+  // === RSVP & UCAPAN GOOGLE SHEET (DIPERBARUI) ===
   let allUcapan = [];
   let currentPage = 1;
   const itemsPerPage = 5; 
@@ -1845,7 +1914,11 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const nama = document.getElementById("nama").value.trim();
       const ucapan = document.getElementById("ucapan").value.trim();
-      const kehadiran = document.getElementById("kehadiran").value;
+      
+      // Ambil nilai dari radio button yang dipilih
+      const kehadiranInput = document.querySelector('input[name="kehadiran"]:checked');
+      const kehadiran = kehadiranInput ? kehadiranInput.value : "";
+      
       const waktu = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
 
       if (!nama || !ucapan || !kehadiran) return;
@@ -1885,13 +1958,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderUcapan() {
+    const ucapanListContainer = document.getElementById("ucapanList");
     list.innerHTML = "";
     
+    // Jika data kosong, sembunyikan area ucapan sepenuhnya
     if (allUcapan.length === 0) {
-      list.innerHTML = `<p style="opacity:0.8; text-align:center; color: #fff;">Belum ada ucapan 😇</p>`;
+      ucapanListContainer.style.display = "none";
       paginationContainer.innerHTML = "";
       return;
     }
+    
+    // Jika ada data, tampilkan areanya
+    ucapanListContainer.style.display = "block";
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -1988,6 +2066,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 </body>
 </html>
-
-
 
