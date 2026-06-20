@@ -475,7 +475,6 @@
       transform: rotate(45deg);
     }
 
-    /* PERUBAHAN FONT NAMA PENGANTIN SESUAI INSTRUKSI (SAMA DENGAN HALAMAN COVER) */
     .nama-pengantin {
       font-family: 'Playfair Display', serif;
       font-size: 24px;
@@ -1080,7 +1079,11 @@
       overflow: hidden; 
     } 
 
-    #rsvp input[type="text"], #rsvp textarea { background: rgba(255,255,255,0.9); color: #333; }
+    /* === UBAH JADI PUTIH BERSIH === */
+    #rsvp input[type="text"], #rsvp textarea { 
+      background: #ffffff; 
+      color: #333; 
+    }
     
     #rsvp button {
       background: rgba(243, 163, 2, 0.85); color: #ffffff; font-weight: 600; cursor: pointer; transition: 0.3s; border: none;
@@ -1088,7 +1091,7 @@
     #rsvp button:hover { background: rgba(243, 163, 2, 1); transform: scale(1.02); }
     
     /* =========================================
-       STYLE RADIO BUTTON KEHADIRAN (BARU)
+       STYLE RADIO BUTTON KEHADIRAN
        ========================================= */
     .radio-kehadiran-group {
       display: flex;
@@ -1127,7 +1130,7 @@
     
     .radio-label input[type="radio"]:checked + .radio-custom {
       border-color: #f3a302;
-      background: rgba(255, 255, 255, 0.9);
+      background: #ffffff;
     }
     
     .radio-label input[type="radio"]:checked + .radio-custom::after {
@@ -1144,10 +1147,13 @@
 
     .ucapan-list { margin-top: 30px; text-align: left; }
     
+    /* === UBAH JADI PUTIH BERSIH === */
     .ucapan-item {
-      background: rgba(255, 255, 255, 0.85); border-radius: 12px; padding: 15px;
+      background: #ffffff; 
+      border-radius: 12px; padding: 15px;
       margin-bottom: 10px; animation: fadeIn 0.6s ease;
       color: #333; border-left: 4px solid #f3a302;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
     }
     .ucapan-item small { opacity: 0.8; font-size: 13px; color: #5a6e82; }
 
@@ -1276,6 +1282,70 @@
       display: flex !important;
       justify-content: center !important;
       align-items: center !important;
+    }
+
+    /* =========================================
+       CUSTOM ALERT MODAL (POP UP PUTIH)
+       ========================================= */
+    .custom-alert-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(5px);
+      z-index: 100000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .custom-alert-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .custom-alert-box {
+      background: #ffffff;
+      padding: 30px 20px;
+      border-radius: 15px;
+      max-width: 320px;
+      width: 85%;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+    .custom-alert-overlay.show .custom-alert-box {
+      transform: translateY(0);
+    }
+    .custom-alert-icon {
+      font-size: 40px;
+      color: #f3a302;
+      margin-bottom: 15px;
+    }
+    .custom-alert-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      white-space: pre-wrap; /* Agar enter (\n) terbaca */
+    }
+    .custom-alert-btn {
+      background: #354a5f;
+      color: #fff;
+      border: none;
+      padding: 10px 30px;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .custom-alert-btn:hover {
+      background: #1c2b3a;
     }
   </style>
 </head>
@@ -1630,7 +1700,28 @@
   </footer>
 </div>
 
+<!-- =========================================
+     WADAH CUSTOM ALERT POP-UP
+     ========================================= -->
+<div id="customAlert" class="custom-alert-overlay">
+  <div class="custom-alert-box">
+    <div class="custom-alert-icon"><i class="fa-solid fa-circle-info"></i></div>
+    <p id="customAlertText" class="custom-alert-text"></p>
+    <button class="custom-alert-btn" onclick="closeCustomAlert()">Mengerti</button>
+  </div>
+</div>
+
 <script>
+// === FUNGSI CUSTOM ALERT POP-UP ===
+function showCustomAlert(msg) {
+  document.getElementById('customAlertText').innerText = msg;
+  document.getElementById('customAlert').classList.add('show');
+}
+
+function closeCustomAlert() {
+  document.getElementById('customAlert').classList.remove('show');
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const scriptURL = "https://script.google.com/macros/s/AKfycbzG8F-UHPHggkZf37rapan14p8ePVA6EgWepiLtWBJmwE72ScN7JVsSq__4ENZvS8gr/exec";
   const KODE_KLIEN = "Trial";
@@ -1651,7 +1742,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function salin(nomor) {
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(nomor).then(() => {
-        alert("Nomor rekening disalin:\n" + nomor);
+        showCustomAlert("Nomor rekening berhasil disalin:\n" + nomor);
       });
     } else {
       const t = document.createElement("textarea");
@@ -1660,7 +1751,7 @@ document.addEventListener("DOMContentLoaded", () => {
       t.select();
       document.execCommand("copy");
       t.remove();
-      alert("Nomor rekening disalin:\n" + nomor);
+      showCustomAlert("Nomor rekening berhasil disalin:\n" + nomor);
     }
   }
 
@@ -1949,7 +2040,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentPage = 1; 
         loadUcapan(true);
       } catch (err) {
-        alert("Gagal mengirim ucapan. Silakan coba lagi.");
+        showCustomAlert("Gagal mengirim ucapan. Silakan coba lagi.");
       } finally {
         submitBtn.innerHTML = originalBtnText;
         submitBtn.disabled = false;
@@ -2049,7 +2140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (btn.closest('form') && btn.closest('form').querySelector('input, textarea')) {
           btn.setAttribute('type', 'button'); // Cabut fungsi kirimnya
           btn.onclick = function() {
-            alert("Ini adalah versi pameran (Demo). Fitur kirim ucapan dinonaktifkan.");
+            showCustomAlert("Mohon maaf, ini adalah versi pameran (Demo).\nFitur kirim ucapan saat ini dinonaktifkan.");
           };
         }
       });
@@ -2058,7 +2149,7 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll('a[href*="wa.me"], a[href*="whatsapp"]').forEach(link => {
         link.setAttribute('href', 'javascript:void(0)'); // Putuskan linknya
         link.onclick = function() {
-          alert("Ini adalah versi pameran (Demo). Fitur konfirmasi WA dinonaktifkan.");
+          showCustomAlert("Mohon maaf, ini adalah versi pameran (Demo).\nFitur konfirmasi via WhatsApp saat ini dinonaktifkan.");
         };
       });
     }, 1500); // Beri jeda 1.5 detik agar kodingan asli loading duluan
